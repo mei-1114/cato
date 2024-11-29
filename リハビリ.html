@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CATO Knowledge Base Interactive Tree</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.24.0/cytoscape.min.js"></script>
+    <style>
+        #cy {
+            width: 100%;
+            height: 100vh;
+            display: block;
+            background-color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div id="cy"></div>
+    <script>
+        const cy = cytoscape({
+            container: document.getElementById('cy'),
+            elements: [
+                { data: { id: 'root', label: 'CATO Knowledge Base' }, position: { x: 0, y: -200 } },
+                { data: { id: 'monitoring', label: 'Monitoring' }, position: { x: -300, y: -100 } },
+                { data: { id: 'network', label: 'Network' }, position: { x: -150, y: -100 } },
+                { data: { id: 'access', label: 'Access' }, position: { x: 0, y: -100 } },
+                { data: { id: 'security', label: 'Security' }, position: { x: 150, y: -100 } },
+                { data: { id: 'assets', label: 'Assets' }, position: { x: 300, y: -100 } },
+                { data: { id: 'administration', label: 'Administration' }, position: { x: 450, y: -100 } },
+                { data: { source: 'root', target: 'monitoring' } },
+                { data: { source: 'root', target: 'network' } },
+                { data: { source: 'root', target: 'access' } },
+                { data: { source: 'root', target: 'security' } },
+                { data: { source: 'root', target: 'assets' } },
+                { data: { source: 'root', target: 'administration' } }
+            ],
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': '#00FF00',
+                        'label': 'data(label)',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'color': '#00FF00',
+                        'text-outline-color': '#000000',
+                        'text-outline-width': 2,
+                        'font-size': '20px'
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 2,
+                        'line-color': '#00FF00',
+                        'target-arrow-color': '#00FF00',
+                        'target-arrow-shape': 'triangle'
+                    }
+                }
+            ],
+            layout: { name: 'preset' }
+        });
+
+        resetPositions();
+
+        const secondLevelNodes = {
+            monitoring: [{ id: 'monitoring1', label: 'Monitoring Child 1' }, { id: 'monitoring2', label: 'Monitoring Child 2' }],
+            network: [{ id: 'network1', label: 'Network Child 1' }, { id: 'network2', label: 'Network Child 2' }],
+            access: [{ id: 'client_settings', label: 'クライアント設定' }, { id: 'client_authentication', label: 'クライアント認証' }, { id: 'access_portal', label: 'アクセスポータル' }, { id: 'management', label: '管理' }],
+            security: [{ id: 'security1', label: 'Security Child 1' }, { id: 'security2', label: 'Security Child 2' }],
+            assets: [{ id: 'assets1', label: 'Assets Child 1' }, { id: 'assets2', label: 'Assets Child 2' }],
+            administration: [{ id: 'administration1', label: 'Administration Child 1' }, { id: 'administration2', label: 'Administration Child 2' }]
+        };
+
+        const thirdLevelNodes = {
+            monitoring1: [{ id: 'monitoring1_1', label: 'Monitoring 1 Subchild 1' }, { id: 'monitoring1_2', label: 'Monitoring 1 Subchild 2' }],
+            monitoring2: [{ id: 'monitoring2_1', label: 'Monitoring 2 Subchild 1' }, { id: 'monitoring2_2', label: 'Monitoring 2 Subchild 2' }],
+            network1: [{ id: 'network1_1', label: 'Network 1 Subchild 1' }, { id: 'network1_2', label: 'Network 1 Subchild 2' }],
+            network2: [{ id: 'network2_1', label: 'Network 2 Subchild 1' }, { id: 'network2_2', label: 'Network 2 Subchild 2' }],
+            client_settings: [{ id: 'client_settings_1', label: 'Client Settings Subchild 1' },{ id: 'client_settings_2', label: 'Client Settings Subchild 2' }],
+            client_authentication: [{ id: 'client_authentication_1', label: 'Client Authentication Subchild 1' },{ id: 'client_authentication_2', label: 'Client Authentication Subchild 2' }],
+            access_portal: [{ id: 'access_portal_1', label: 'access_portal Subchild 1' },{ id: 'access_portal_2', label: 'access_portal Subchild 2' }],
+            management: [{ id: 'management_1', label: 'management Subchild 1' },{ id: 'management_2', label: 'management Subchild 2' }],
+            security1: [{ id: 'security1_1', label: 'Security 1 Subchild 1' },{ id: 'security1_2', label: 'Security 1 Subchild 2' }],
+            security2: [{ id: 'security2_1', label: 'Security 2 Subchild 1' },{ id: 'security2_2', label: 'Security 2 Subchild 2' }],
+            assets1: [{ id: 'assets1_1', label: 'Assets 1 Subchild 1' },{ id: 'assets1_2', label: 'Assets 1 Subchild 2' }],
+            assets2: [{ id: 'assets2_1', label: 'Assets 2 Subchild 1' },{ id: 'assets2_2', label: 'Assets 2 Subchild 2' }],
+            administration1: [{ id: 'administration1_1', label: 'Administration 1 Subchild 1' },{ id: 'administration1_2', label: 'Administration 1 Subchild 2' }],
+            administration2: [{ id: 'administration2_1', label: 'Administration 2 Subchild 1' },{ id: 'administration2_2', label: 'Administration 2 Subchild 2' }]
+            // Add similar third-level nodes for other second-level nodes
+        };
+
+        const ForceLevelNodes = {
+
+            client_settings_1: [
+                { id: 'client_settings_3', label: 'Client Settings Subchild 3' },
+                { id: 'client_settings_4', label: 'Client Settings Subchild 4', url: 'https://support.catonetworks.com/hc/en-us/articles/4417643184529-Protecting-Users-with-Always-On-Security' }
+            ],
+
+            management_1: [
+                { id: 'management_3', label: 'Management Subchild 3' },
+                { id: 'management_4', label: 'Management Subchild 4' }
+            ]
+        };
+
+        let expandedSecondLevel = null;
+        let expandedThirdLevel = null;
+        let expandedForceLevel = null;
+
+        cy.on('tap', 'node', function (evt) {
+            const node = evt.target;
+
+            // URLが設定されている場合は新しいタブで開く
+            const url = node.data('url');
+            if (url) {
+                window.open(url, '_blank'); // URLを開く
+                return; // 他の処理をスキップ
+            }
+
+            if (node.id() === 'root') {
+                collapseAllNodes();
+                resetPositions();
+                return;
+            }
+
+            if (secondLevelNodes[node.id()]) {
+                if (expandedSecondLevel) {
+                    collapseNodes(expandedSecondLevel, secondLevelNodes);
+                }
+                if (expandedThirdLevel) {
+                    collapseNodes(expandedThirdLevel, thirdLevelNodes);
+                    expandedThirdLevel = null;
+                }
+                if (expandedForceLevel) {
+                    collapseNodes(expandedForceLevel, ForceLevelNodes);
+                    expandedForceLevel = null;
+                }
+                expandNodes(node, secondLevelNodes[node.id()], 100, 150);
+                expandedSecondLevel = node.id();
+            }
+
+            if (thirdLevelNodes[node.id()]) {
+                if (expandedThirdLevel && expandedThirdLevel !== node.id()) {
+                    collapseNodes(expandedThirdLevel, thirdLevelNodes);
+                }
+                if (expandedForceLevel) {
+                    collapseNodes(expandedForceLevel, ForceLevelNodes);
+                    expandedThirdLevel = null;
+                }
+                expandNodes(node, thirdLevelNodes[node.id()], 100, 150);
+                expandedThirdLevel = node.id();
+            }
+
+            if (ForceLevelNodes[node.id()]) {
+                if (expandedForceLevel && expandedForceLevel !== node.id()) {
+                    collapseNodes(expandedForceLevel, ForceLevelNodes);
+                }
+                expandNodes(node, ForceLevelNodes[node.id()], 100, 150);
+                expandedForceLevel = node.id();
+            }
+           
+        });
+
+        function expandNodes(parentNode, children, yOffset, spacing) {
+            const firstX = cy.$id('monitoring').position().x;
+            const lastX = cy.$id('administration').position().x;
+            const xSpacing = (lastX - firstX) / (children.length - 1);
+            const elements = children.map((child, index) => ({
+                data: { id: child.id, label: child.label, url: child.url }, // URLも含める
+                position: { x: firstX + index * xSpacing, y: parentNode.position().y + yOffset }
+            }));
+            const edges = children.map(child => ({
+                data: { source: parentNode.id(), target: child.id }
+            }));
+            cy.add([...elements, ...edges]);
+            cy.layout({ name: 'preset' }).run();
+        }
+
+        function collapseNodes(parentId, nodeGroup) {
+            const children = nodeGroup[parentId];
+            if (!children) return;
+            children.forEach(child => {
+                cy.remove(cy.$id(child.id));
+            });
+        }
+
+        function collapseAllNodes() {
+            if (expandedSecondLevel) {
+                collapseNodes(expandedSecondLevel, secondLevelNodes);
+                expandedSecondLevel = null;
+            }
+            if (expandedThirdLevel) {
+                collapseNodes(expandedThirdLevel, thirdLevelNodes);
+                expandedThirdLevel = null;
+            }
+            if (expandedForceLevel) {
+                collapseNodes(expandedForceLevel, ForceLevelNodes);
+                expandedForceLevel = null;
+            }
+        }
+
+        function resetPositions() {
+    // rootノードを画面中央に移動
+    cy.$id('root').position({ x: cy.container().clientWidth / 2, y: 100 });
+
+    // 各第1階層ノードの座標を再配置
+    const spacing = 150;
+    const rootPosition = cy.$id('root').position();
+    const firstLevelNodes = ['monitoring', 'network', 'access', 'security', 'assets', 'administration'];
+
+    firstLevelNodes.forEach((id, index) => {
+        cy.$id(id).position({
+            x: rootPosition.x + (index - (firstLevelNodes.length - 1) / 2) * spacing,
+            y: rootPosition.y + 150,
+        });
+    });
+
+    // レイアウトを再実行
+    cy.layout({ name: 'preset' }).run();
+}
+
+    </script>
+</body>
+</html>
